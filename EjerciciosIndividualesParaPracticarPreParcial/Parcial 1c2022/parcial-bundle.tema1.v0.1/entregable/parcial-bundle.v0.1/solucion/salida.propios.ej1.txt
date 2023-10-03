@@ -1,0 +1,26 @@
+== Ejercicio 1 ==
+
+Agregar
+
+0 - []
+0 - []
+0 - []
+0 - []
+
+Get
+
+0 - []
+(null)
+(null)
+(null)
+(null)
+
+Quitar
+
+0 - [] - (null)
+0 - [] - (null)
+0 - [] - (null)
+
+Swap
+
+0 - []
