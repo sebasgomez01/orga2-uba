@@ -8,10 +8,11 @@ void strArrayPrint(str_array_t* a, FILE* pFile) {
         strPrint(a->data[i], pFile);
         fprintf(pFile, ",");
     }
+    
     if(a->size >= 1) {
         strPrint(a->data[a->size-1], pFile);
     }
-    fprintf(pFile, "]");
+    fprintf(pFile, "]\n");
 }
 
 char* strArrayRemove(str_array_t* a, uint8_t i) {
