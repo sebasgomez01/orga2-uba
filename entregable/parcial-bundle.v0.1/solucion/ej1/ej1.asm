@@ -147,6 +147,7 @@ split_pagos_usuario_asm:
 
 	; Ahora tengo que llamar a uint8_t contar_pagos_aprobados_asm(list_t* pList, char* usuario);
 	mov rdi, r15
+	mov rsi, r14
 	call contar_pagos_aprobados
 	; ahora tengo en rax la cantidad de pagos aprobados
 	mov byte [r13], al ; me lo guardo en la posición correspondiente de pagoSplitted
@@ -179,22 +180,25 @@ split_pagos_usuario_asm:
 	mov rdi, r15
 	mov rsi, r14
 
-	; Me guardo en r12 el puntero a aprobados y en r11 el puntero a rechazados
+	; Me guardo en r15 el puntero a aprobados y en r14 el puntero a rechazados
 	mov r15, [r13 + OFFSET_APROBADOS]
-	mov r15, [r13 + OFFSET_RECHAZADOS]
-
-	mov r12, [rdi]       					; me guardo en rdx el puntero al primer nodo de la lista
-	cmp r12, 0                              ; comparo el puntero al nodo actual con el puntero al último elemento
+	mov r14, [r13 + OFFSET_RECHAZADOS]
+	push r13 ; pusheo r13 para despues popearlo en rax
+	mov r13, rsi ; guardo en r13 que es no volátil el puntero al usuario
+	mov r12, [rdi]       					; me guardo en r12 el puntero al primer nodo de la lista
+	cmp r12, 0                              ; chequeo si el puntero es nulo
 	je fin_split
 
 	loop_start_split:
 	mov rcx, [r12]       					; me guardo en rcx el puntero al pago
 
 	; chequeo si el usuario es el cobrador, si no lo es salto al siguiente nodo
-	mov rdi, [rcx + OFFSET_COBRADOR]        ; me guardo en r10 el puntero al cobrador
-	call strcmp                            ; comparo el puntero al usuario con el puntero al cobradorr
+	mov rdi, [rcx + OFFSET_COBRADOR]        ; me guardo en rdi el puntero al cobrador
+	mov rsi, r13
+	call strcmp                             ; 
 	cmp rax, 0
 	jne avanzar_nodo_split					; si no son iguales, salto a avanzar_nodo_split
+
 	mov rcx, [r12] 
 	mov r9b, BYTE [rcx + OFFSET_APROBADO]   ; me guardo en r9b el valor de aprobado del struct pago
 	cmp r9b, 0 								; comparo aprobado con cero
@@ -212,13 +216,14 @@ split_pagos_usuario_asm:
 
 	avanzar_nodo_split:
 	mov r8, [r12 + OFFSET_NEXT]             ; me guardo en r8 el puntero al siguiente nodo
-	mov r12, r8                             ; me guardo en rdx el puntero al siguiente nodo
+	mov r12, r8                             ; me guardo en r12 el puntero al siguiente nodo
 	cmp r12, 0 					            ; comparo el puntero al nodo actual con el puntero al último elemento
 	je fin_split  							; si son iguales, estoy en el último nodo de la lista, entonces salto a fin
 	jmp loop_start_split 					; salto a loop_start para seguir iterando
 
 	fin_split:
-	mov rax, r13
+	pop rax
+	
 	; epílogo
 	pop r15
 	pop r14
