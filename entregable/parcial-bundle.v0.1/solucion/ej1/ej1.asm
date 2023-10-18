@@ -180,39 +180,40 @@ split_pagos_usuario_asm:
 	mov rsi, r14
 
 	; Me guardo en r12 el puntero a aprobados y en r11 el puntero a rechazados
-	mov r12, [r13 + OFFSET_APROBADOS]
-	mov r11, [r13 + OFFSET_RECHAZADOS]
+	mov r15, [r13 + OFFSET_APROBADOS]
+	mov r15, [r13 + OFFSET_RECHAZADOS]
 
-	mov rdx, [rdi]       					; me guardo en rdx el puntero al primer nodo de la lista
-	cmp rdx, 0                              ; comparo el puntero al nodo actual con el puntero al último elemento
+	mov r12, [rdi]       					; me guardo en rdx el puntero al primer nodo de la lista
+	cmp r12, 0                              ; comparo el puntero al nodo actual con el puntero al último elemento
 	je fin_split
 
 	loop_start_split:
-	mov rcx, [rdx]       					; me guardo en rcx el puntero al pago
+	mov rcx, [r12]       					; me guardo en rcx el puntero al pago
 
 	; chequeo si el usuario es el cobrador, si no lo es salto al siguiente nodo
-	mov r10, [rcx + OFFSET_COBRADOR]        ; me guardo en r10 el puntero al cobrador
-	cmp r10, rsi                            ; comparo el puntero al usuario con el puntero al cobrador
+	mov rdi, [rcx + OFFSET_COBRADOR]        ; me guardo en r10 el puntero al cobrador
+	call strcmp                            ; comparo el puntero al usuario con el puntero al cobradorr
+	cmp rax, 0
 	jne avanzar_nodo_split					; si no son iguales, salto a avanzar_nodo_split
-	
+	mov rcx, [r12] 
 	mov r9b, BYTE [rcx + OFFSET_APROBADO]   ; me guardo en r9b el valor de aprobado del struct pago
 	cmp r9b, 0 								; comparo aprobado con cero
 	je pago_desaprobado  					; si son iguales salto a pago_desaprobado, pues el pago no está aprobado
 	jne pago_aprobado
 
 	pago_desaprobado:
-	mov [r11], rcx   ; me guardo el pago rechazado
-	add r11, 8       ; le sumo 8 bytes al puntero para que apunte a la siguiente posición del array
+	mov [r14], rcx   ; me guardo el pago rechazado
+	add r14, 8       ; le sumo 8 bytes al puntero para que apunte a la siguiente posición del array
 	jmp avanzar_nodo_split
 
 	pago_aprobado:
-	mov [r12], rcx   ; me guardo el pago aprobado
-	add r12, 8       ; le sumo 8 bytes al puntero para que apunte a la siguiente posición del array
+	mov [r15], rcx   ; me guardo el pago aprobado
+	add r15, 8       ; le sumo 8 bytes al puntero para que apunte a la siguiente posición del array
 
 	avanzar_nodo_split:
-	mov r8, [rdx + OFFSET_NEXT]             ; me guardo en r8 el puntero al siguiente nodo
-	mov rdx, r8                             ; me guardo en rdx el puntero al siguiente nodo
-	cmp rdx, 0 					            ; comparo el puntero al nodo actual con el puntero al último elemento
+	mov r8, [r12 + OFFSET_NEXT]             ; me guardo en r8 el puntero al siguiente nodo
+	mov r12, r8                             ; me guardo en rdx el puntero al siguiente nodo
+	cmp r12, 0 					            ; comparo el puntero al nodo actual con el puntero al último elemento
 	je fin_split  							; si son iguales, estoy en el último nodo de la lista, entonces salto a fin
 	jmp loop_start_split 					; salto a loop_start para seguir iterando
 

@@ -30,31 +30,31 @@ Cliente orne: 1 1
 Cliente fransa: 0 2
 == Ejercicio 1b ==
 
-Cliente susan: 80 64
-Cliente bob: 16 64
-Cliente nicolas: 208 64
-Cliente gabi: 144 64
-Cliente tini: 80 64
-Cliente orne: 16 64
-Cliente fransa: 208 64
-Cliente susan: 96 64
-Cliente bob: 32 64
-Cliente nicolas: 224 64
-Cliente gabi: 160 64
-Cliente tini: 96 64
-Cliente orne: 32 64
-Cliente fransa: 224 64
-Cliente susan: 112 64
-Cliente bob: 48 64
-Cliente nicolas: 240 64
-Cliente gabi: 176 64
-Cliente tini: 112 64
-Cliente orne: 48 64
-Cliente fransa: 240 64
-Cliente susan: 128 64
-Cliente bob: 64 64
-Cliente nicolas: 0 64
-Cliente gabi: 192 64
-Cliente tini: 128 64
-Cliente orne: 64 64
-Cliente fransa: 0 64
+Cliente @üÿş: 80 64
+Cliente ÿş: 16 64
+Cliente àûÿş: 208 64
+Cliente Xüÿş: 144 64
+Cliente püÿş: 80 64
+Cliente (üÿş: 16 64
+Cliente ÿş: 208 64
+Cliente @üÿş: 96 64
+Cliente Xüÿş: 32 64
+Cliente àûÿş: 224 64
+Cliente ˆüÿş: 160 64
+Cliente 0ıÿş: 96 64
+Cliente Ğüÿş: 32 64
+Cliente : 224 64
+Cliente (üÿş: 112 64
+Cliente üÿş: 48 64
+Cliente ÿş: 240 64
+Cliente : 176 64
+Cliente àûÿş: 112 64
+Cliente ¨ıÿş: 48 64
+Cliente øûÿş: 240 64
+Cliente  üÿş: 128 64
+Cliente àûÿş: 64 64
+Cliente ÿş: 0 64
+Cliente èüÿş: 192 64
+Cliente ÿş: 128 64
+Cliente Ğüÿş: 64 64
+Cliente (üÿş: 0 64
