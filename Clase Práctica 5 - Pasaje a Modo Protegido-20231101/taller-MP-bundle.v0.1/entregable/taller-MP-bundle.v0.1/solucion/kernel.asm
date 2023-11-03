@@ -36,7 +36,7 @@ start_pm_len equ    $ - start_pm_msg
 BITS 16
 start:
     ; COMPLETAR - Deshabilitar interrupciones
-
+    CLI
 
     ; Cambiar modo de video a 80 X 50
     mov ax, 0003h

@@ -50,6 +50,7 @@
 
 // SEGM_LIMIT_4KIB es el limite de segmento visto como bloques de 4KIB
 // principio del ultimo bloque direccionable.
+
 #define GDT_LIMIT_4KIB(X)  (((X) / 4096) - 1)
 #define GDT_LIMIT_BYTES(X) ((X)-1)
 
@@ -61,14 +62,24 @@
 #define GDT_BASE_HIGH(base) (uint8_t)((((uint32_t)(base)) >> 24) & 0xFF)
 
 /* COMPLETAR - Valores de atributos */ 
-//#define DESC_CODE_DATA
-//#define DESC_SYSTEM    ??
-//#define DESC_TYPE_EXECUTE_READ ??
-//#define DESC_TYPE_READ_WRITE   ??
+#define DESC_CODE_DATA 0x01   // defino el bit S como 1 para decir que el segmento es de código o de datos
+#define DESC_SYSTEM 0x00      // define el bit S como 0 para decir que el segmento es system
+#define DESC_TYPE_EXECUTE_READ 0x0a // defino el campo Type como 10 (a en hexa) para decir que el segmento de código es execute y read
+#define DESC_TYPE_READ_WRITE 0x02 // defino el campo Type como 2 para decir que el segmento de datos es read y write
+
+// Defines propios para los campos que faltan para el descriptor de segmento
+#define DESC_G_ON 0x01 
+#define DESC_DPL_0 0x01
+#define DESC_DPL_3 0x03
+#define DESC_P_ON 0x01
+#define FLAT_SEGM_BASE 0x0
+
 
 /* COMPLETAR - Tamaños de segmentos */ 
-//#define FLAT_SEGM_SIZE   ??
-//#define VIDEO_SEGM_SIZE  ??
+#define FLAT_SEGM_SIZE (817 * 1024 * 1024) // Defino el tamaño de los segmentos como 817 MiB
+#define VIDEO_SEGM_SIZE () //
+
+
 
 
 /* Direcciones de memoria */
