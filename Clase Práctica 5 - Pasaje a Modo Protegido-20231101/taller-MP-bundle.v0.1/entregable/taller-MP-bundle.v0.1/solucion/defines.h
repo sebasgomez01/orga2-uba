@@ -68,16 +68,20 @@
 #define DESC_TYPE_READ_WRITE 0x02 // defino el campo Type como 2 para decir que el segmento de datos es read y write
 
 // Defines propios para los campos que faltan para el descriptor de segmento
-#define DESC_G_ON 0x01 
+#define DESC_G_ON 0x01
+#define DESC_G_OFF 0x00
 #define DESC_DPL_0 0x01
 #define DESC_DPL_3 0x03
 #define DESC_P_ON 0x01
 #define FLAT_SEGM_BASE 0x0
+#define DESC_DB_ON 0x01
+#define DESC_L_OFF 0x00
+#define DESC_AVL 0X00
 
 
 /* COMPLETAR - Tamaños de segmentos */ 
 #define FLAT_SEGM_SIZE (817 * 1024 * 1024) // Defino el tamaño de los segmentos como 817 MiB
-#define VIDEO_SEGM_SIZE () //
+#define VIDEO_SEGM_SIZE (80 * 50 * 2) //
 
 
 

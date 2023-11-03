@@ -4,6 +4,7 @@
 ; ==============================================================================
 
 %include "print.mac"
+%include "a20.asm"
 
 global start
 
@@ -48,11 +49,19 @@ start:
     ; COMPLETAR - Imprimir mensaje de bienvenida - MODO REAL
     ; (revisar las funciones definidas en print.mac y los mensajes se encuentran en la
     ; sección de datos)
+    print_text_rm start_rm_msg, tart_rm_len, 00001111, 0x05, 0x02
 
     ; COMPLETAR - Habilitar A20
     ; (revisar las funciones definidas en a20.asm)
+    CALL A20_check
 
+    TEST ax, ax
+    JNZ A20_habilitado
+    CALL A20_enable
+
+    A20_habilitado:
     ; COMPLETAR - Cargar la GDT
+    
 
     ; COMPLETAR - Setear el bit PE del registro CR0
 
