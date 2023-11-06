@@ -11,6 +11,7 @@ global start
 
 ; COMPLETAR - Agreguen declaraciones extern según vayan necesitando
 
+
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
 ;%define CS_RING_0_SEL ??   
 ;%define DS_RING_0_SEL ??   
@@ -61,13 +62,23 @@ start:
 
     A20_habilitado:
     ; COMPLETAR - Cargar la GDT
-    
+    lgdt [GDT_DESC]
 
     ; COMPLETAR - Setear el bit PE del registro CR0
+    ; El registro CRO tiene 32 bits, y solamenente quiero setear en uno el primer bit, y dejar el resto como estaba,
+    ; esto lo puedo lograr haciendo un or con el valor 0x0000001 (esto es un número 1 de 32 bits)
+    ; Pero como a los registros de control solo los puedo modificar mediante las instrucciones MOV, 
+    ; tengo que copiar el valor de CR0 a otro registro, realizar el or con ese registro y luego volver a cargar el valor en CR0
+    MOV EAX, CR0
+    MOV EBX, 0x01
+    OR EAX, EBX
+    MOV CR0, EAX
 
     ; COMPLETAR - Saltar a modo protegido (far jump)
     ; (recuerden que un far jmp se especifica como jmp CS_selector:address)
     ; Pueden usar la constante CS_RING_0_SEL definida en este archivo
+    jmp modo_protegido
+
 
 BITS 32
 modo_protegido:
