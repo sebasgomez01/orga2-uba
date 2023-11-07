@@ -10,11 +10,14 @@ global start
 
 
 ; COMPLETAR - Agreguen declaraciones extern según vayan necesitando
+;extern A20_check
+;extern A20_enable
+;extern GDT_DESC
 
 
 ; COMPLETAR - Definan correctamente estas constantes cuando las necesiten
-;%define CS_RING_0_SEL ??   
-;%define DS_RING_0_SEL ??   
+%define CS_RING_0_SEL ??   
+%define DS_RING_0_SEL ??   
 
 
 BITS 16
@@ -85,6 +88,7 @@ modo_protegido:
     ; COMPLETAR - A partir de aca, todo el codigo se va a ejectutar en modo protegido
     ; Establecer selectores de segmentos DS, ES, GS, FS y SS en el segmento de datos de nivel 0
     ; Pueden usar la constante DS_RING_0_SEL definida en este archivo
+    
 
     ; COMPLETAR - Establecer el tope y la base de la pila
 

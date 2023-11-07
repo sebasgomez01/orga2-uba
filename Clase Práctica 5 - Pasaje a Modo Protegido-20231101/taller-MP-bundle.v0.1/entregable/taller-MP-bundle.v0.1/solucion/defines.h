@@ -81,7 +81,7 @@
 
 /* COMPLETAR - Tamaños de segmentos */ 
 #define FLAT_SEGM_SIZE (817 * 1024 * 1024) // Defino el tamaño de los segmentos como 817 MiB
-#define VIDEO_SEGM_SIZE (80 * 50 * 2) //
+#define VIDEO_SEGM_SIZE (80 * 50 * 2) // ¿Por qué este tamaño del segmento de video?
 
 
 
