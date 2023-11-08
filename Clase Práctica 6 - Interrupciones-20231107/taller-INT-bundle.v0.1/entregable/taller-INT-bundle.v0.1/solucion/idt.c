@@ -42,9 +42,9 @@ idt_descriptor_t IDT_DESC = {sizeof(idt) - 1, (uint32_t)&idt};
   idt[numero] = (idt_entry_t) {                                                \
     .offset_31_16 = HIGH_16_BITS(&_isr##numero),                               \
     .offset_15_0 = LOW_16_BITS(&_isr##numero),                                 \
-    .segsel = GDT_????_?_SEL,                                                  \
+    .segsel = GDT_CODE_0_SEL,                                                  \
     .type = 0xe,                                                               \
-    .dpl = 0x00,                                                                  \
+    .dpl = 0x00,                                                                 \
     .present = 0x01                                                               \
   }
 
@@ -54,7 +54,7 @@ idt_descriptor_t IDT_DESC = {sizeof(idt) - 1, (uint32_t)&idt};
   idt[numero] = (idt_entry_t) {                                                \
     .offset_31_16 = HIGH_16_BITS(&_isr##numero),                               \
     .offset_15_0 = LOW_16_BITS(&_isr##numero),                                 \
-    .segsel = GDT_????_?_SEL,                                                  \
+    .segsel = GDT_CODE_3_SEL,                                                  \
     .type = 0xe,                                                               \
     .dpl = 0x03,                                                                  \
     .present = 0x01                                                               \
@@ -85,8 +85,12 @@ void idt_init() {
   IDT_ENTRY0(20);
 
   // COMPLETAR: Interrupciones de reloj y teclado
+  IDT_ENTRY0(32); // RELOJ
+  IDT_ENTRY3(33); // TECLADO
 
   // COMPLETAR: Syscalls
+  IDT_ENTRY3(88);
+  IDT_ENTRY3(98);
 }
 
 const char* code2exception[] = {"Divide Error #DE [0]",
