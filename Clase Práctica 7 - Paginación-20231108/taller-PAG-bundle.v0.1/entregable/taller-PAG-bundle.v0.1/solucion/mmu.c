@@ -54,6 +54,13 @@ void mmu_init(void) {}
  * @return devuelve la dirección de memoria de comienzo de la próxima página libre de kernel
  */
 paddr_t mmu_next_free_kernel_page(void) {
+    if(next_free_kernel_page >= identity_mapping_end) {
+        return;
+    }
+    paddr_t next_free_page;
+    next_free_page = next_free_kernel_page;
+    next_free_kernel_page += PAGE_SIZE;
+    return next_free_page;
 }
 
 /**
@@ -61,6 +68,13 @@ paddr_t mmu_next_free_kernel_page(void) {
  * @return devuelve la dirección de memoria de comienzo de la próxima página libre de usuarix
  */
 paddr_t mmu_next_free_user_page(void) {
+    if(next_free_user_page >= user_memory_pool_end) {
+        return;
+    }
+    paddr_t next_free_page;
+    next_free_page = next_free_user_page;
+    next_free_user_page += PAGE_SIZE;
+    return next_free__page;
 }
 
 /**
@@ -70,6 +84,7 @@ paddr_t mmu_next_free_user_page(void) {
  * de páginas usado por el kernel
  */
 paddr_t mmu_init_kernel_dir(void) {
+    
 }
 
 /**

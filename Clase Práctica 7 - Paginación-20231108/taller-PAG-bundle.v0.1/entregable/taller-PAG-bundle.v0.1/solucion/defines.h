@@ -91,13 +91,37 @@ VIRT_PAGE_DIR(X)    devuelve el page directory entry, donde X es una dirección 
 CR3_TO_PAGE_DIR(X)  devuelve el page directory, donde X es el contenido del registro CR3
 MMU_ENTRY_PADDR(X)  devuelve la dirección física de la base de un page frame o de un page table, donde X es el campo de 20 bits en una PTE o PDE
 
-#define VIRT_PAGE_OFFSET(X) ??
-#define VIRT_PAGE_TABLE(X)  ??
-#define VIRT_PAGE_DIR(X)    ??
-#define CR3_TO_PAGE_DIR(X)  ??
-#define MMU_ENTRY_PADDR(X)  ??
+/* Una dirección vitual X tiene 32 bits, de los cuales los 10 bits superiores son el page directory entry, que debo sumar
+al contenido del registro CR3 que me indica donde se encuentra el Page Directory
+ Los segundos diez bits (del del 21 al 12) me dicen la page table entry
+ Y los últimos 12 bits me dicen cuál es el offset dentro de la página, así que tengo
+ */
+/* Entonces para obtener el offset dentro de la página tengo que realizar 20 shifts a izquierda a X, si pienso la dirección como
+ || page directory entry | page table entry | offset dentro de la página ||
+ y 20 shifts a derecha si pienso la dirección como || offset dentro de la página | page table entry | page directory entry ||
+También puedo hacer un and con un el número 0000 0000 0000 0000 0000 1111 1111 1111 = 0x00000FFF
+ ó con 1111 1111 1111 0000 0000 0000 0000 0000 si lo pienso de la segunda forma
+ */
+// Me quedo con el and porque me parece más lindo:
+#define VIRT_PAGE_OFFSET(X) (X & 0x00000FFF)
 
-*/
+/* En este caso me quiero quedar con los bits que van desde el 21 al 12, entonces hago 12 shifs a derecha y luego
+  un and con 0000 0000 0000 0000 0000 0011 1111 1111*/
+#define VIRT_PAGE_TABLE(X)  ((X >> 12) & 0x000003FF)
+
+/* En este caso me quiero quedar con los 10 bits superiores, osea los que van desde el bit 31 al 22
+ Entonces hago un and con el número 1111 1111 1100 0000 0000 0000 0000 0000 = 0xFF300000
+ * */
+
+#define VIRT_PAGE_DIR(X) (X & 0xFF300000)
+
+// Me quiero quedar con los 20 bits superiores, puedo hacer un and con 0xFFFFF000 ó 12 shifts a derecha
+#define CR3_TO_PAGE_DIR(X)  (X & 0xFFFFF000) //
+
+// Me quiero quedar con los 20 bits superiores otra vez
+#define MMU_ENTRY_PADDR(X) (X >> 12)
+
+
 
 #define MMU_P (1 << 0)
 #define MMU_W (1 << 1)
