@@ -84,7 +84,27 @@ paddr_t mmu_next_free_user_page(void) {
  * de páginas usado por el kernel
  */
 paddr_t mmu_init_kernel_dir(void) {
-    
+    /*
+    for (int i = 0; i < identity_mapping_end; i += 8) {
+
+    }
+    */
+    // Limpio el contenido del directorio de páginas y de la tabla de páginas 0 del kernel
+    zero_page(KERNEL_PAGE_DIR);
+    zero_page(KERNEL_PAGE_TABLE_0);
+
+    // Defino la única entrada del page directory
+    kpd[0].attrs = MMU_W | MMU_P;
+    kpd[0].pt = ((uint32_t)kpt >> 12); // ¿esto no debería ser ?
+    // kpt es la entrada 0 del kernel page table, osea tiene un descriptor de página,
+    // entonces no entiendo porque inicializa kpd[0].pt como los 20 bits de kpt
+
+    for (int i = 0; i < 1024; i++){
+        kpt[i].attrs = MMU_W | MMU_P;
+        kpt[i].page = i;
+    }
+
+    return kpd; // no estoy seguro de que deba devolver kpd por un tema de tipos de dato
 }
 
 /**
