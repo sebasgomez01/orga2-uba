@@ -8,7 +8,7 @@
 
 #include "mmu.h"
 #include "i386.h"
-
+#include "defines.h"
 #include "kassert.h"
 
 static pd_entry_t* kpd = (pd_entry_t*)KERNEL_PAGE_DIR;
@@ -115,7 +115,14 @@ paddr_t mmu_init_kernel_dir(void) {
  * @param phy la dirección física que debe ser accedida (dirección de destino)
  * @param attrs los atributos a asignar en la entrada de la tabla de páginas
  */
+
+/* Dirección virtual de 32 bits = || dir page offset | page table offset || page frame offset */
 void mmu_map_page(uint32_t cr3, vaddr_t virt, paddr_t phy, uint32_t attrs) {
+    uint32_t page_directory = CR3_TO_PAGE_DIR(cr3);
+    uint32_t page_directory_entry = VIRT_PAGE_DIR(virt);
+    uint32_t page_table_entry = VIRT_PAGE_TABLE(virt);
+    uint32_t page
+    uint32_t page_frame_adress = MMU_ENTRY_PADDR(v);
 }
 
 /**
