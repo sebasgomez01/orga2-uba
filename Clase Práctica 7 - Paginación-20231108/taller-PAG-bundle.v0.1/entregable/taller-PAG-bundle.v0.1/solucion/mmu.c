@@ -118,12 +118,33 @@ paddr_t mmu_init_kernel_dir(void) {
 
 /* Dirección virtual de 32 bits = || dir page offset | page table offset || page frame offset */
 void mmu_map_page(uint32_t cr3, vaddr_t virt, paddr_t phy, uint32_t attrs) {
-    uint32_t page_directory = CR3_TO_PAGE_DIR(cr3);
-    uint32_t page_directory_entry = VIRT_PAGE_DIR(virt);
-    uint32_t page_table_entry = VIRT_PAGE_TABLE(virt);
-    uint32_t page
-    uint32_t page_frame_adress = MMU_ENTRY_PADDR(v);
+    pd_entry_t* page_directory_address;
+    page_directory_address = (pd_entry_t*) CR3_TO_PAGE_DIR(virt);
+    uint32_t index_page_directory_entry : 20;
+    index_page_directory_entry = VIRT_PAGE_DIR(virt);
+    uint32_t index_page_table_entry : 20;
+    index_page_table_entry = VIRT_PAGE_TABLE(virt);
+    uint32_t page_frame_offset : 12;
+    page_frame_offset = VIRT_PAGE_OFFSET(virt);
+    uint32_t base_page_frame : 20;
+    base_page_frame = phy - page_frame_offset;
+
+    // Defino la page directory entry
+    page_directory_address[index_page_directory_entry].attrs = attrs;
+    page_directory_address[index_page_directory_entry].pt = kpt;
+
+    // Defino la page table entry
+    kpt[index_page_table_entry].attrs = attrs;
+    kpt[index_page_table_entry].page = base_page_frame; 
+
+    tlbflush();
 }
+
+// Duda sobre la función mmu_unmap_page:
+// Tengo que declarar unas estructuras pd_entry_t y pt_entry_t nuevas?
+// O tengo usar kpd y kpt?
+// Tengo que asignar attrs a ambas estructuras de esa forma o solo a la page table entry?
+
 
 /**
  * mmu_unmap_page elimina la entrada vinculada a la dirección virt en la tabla de páginas correspondiente
@@ -131,6 +152,26 @@ void mmu_map_page(uint32_t cr3, vaddr_t virt, paddr_t phy, uint32_t attrs) {
  * @return la dirección física de la página desvinculada
  */
 paddr_t mmu_unmap_page(uint32_t cr3, vaddr_t virt) {
+    // La idea es obtener la dirección física de la página y usar zero_page(phys_address) para limpiarla
+    
+    // Obtengo el page table entry correspondiente
+    pt_entry_t page_table_entry;
+    page_table_entry = VIRT_PAGE_TABLE(virt);
+    // Obtengo la dirección donde empieza la página
+    paddr_t page_base_address;
+    page_base_address = page_table_entry.page;
+    // Me guardo la dirección física que tengo que retornar
+    paddr_t page_offset;
+    page_offset = VIRT_PAGE_OFFSET(virt); 
+    paddr_t phy_page_start = page_base_address + page_offset; 
+    // Limpio la página
+    zero_page(page_base_address);
+    // elimino la page table entry vinculada
+    page_table_entry.attrs = 0;
+    page_table_entry.page = 0;
+    // Actualizo la tlb
+    tlbflush();
+    return phy_page_start;
 
 }
 
@@ -146,6 +187,7 @@ paddr_t mmu_unmap_page(uint32_t cr3, vaddr_t virt) {
  * la copia y luego desmapea las páginas. Usar la función rcr3 definida en i386.h para obtener el cr3 actual
  */
 void copy_page(paddr_t dst_addr, paddr_t src_addr) {
+    
 }
 
  /**
