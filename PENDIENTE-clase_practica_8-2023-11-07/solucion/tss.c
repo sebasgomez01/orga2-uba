@@ -16,6 +16,7 @@
  * al hacer el salto a la tarea idle
  */
 tss_t tss_initial = {0};
+
 // TSS de la tarea idle
 tss_t tss_idle = {
   .ss1 = 0,
@@ -31,9 +32,11 @@ tss_t tss_idle = {
   .fs = GDT_DATA_0_SEL,
   .ss = GDT_DATA_0_SEL,
 };
+
 // Lista de tss, de aquí se cargan (guardan) las tss al hacer un cambio de contexto
 tss_t tss_tasks[MAX_TASKS] = {0};
 
+// 
 gdt_entry_t tss_gdt_entry_for_task(tss_t* tss) {
   return (gdt_entry_t) {
     .g = 0,
@@ -62,18 +65,18 @@ void tss_set(tss_t tss, int8_t task_id) {
  * Crea una tss con los valores por defecto y el eip code_start
  */
 tss_t tss_create_user_task(paddr_t code_start) {
-/*ENUNCIADO
+//ENUNCIADO
   //COMPLETAR: es correcta esta llamada a mmu_init_task_dir?
   uint32_t cr3 = mmu_init_task_dir(code_start);
   //COMPLETAR: asignar valor inicial de la pila de la tarea
-  vaddr_t stack = ??;
+  vaddr_t stack = TASK_STACK_BASE;
   //COMPLETAR: dir. virtual de comienzo del codigo
-  vaddr_t code_virt = ??;
+  vaddr_t code_virt = TASK_CODE_VIRTUAL;
   //COMPLETAR: pedir pagina de kernel para la pila de nivel cero
-  vaddr_t stack0 = ??;
+  vaddr_t stack0 = mmu_next_free_kernel_page;
   //COMPLETAR: a donde deberia apuntar la pila de nivel cero?
-  vaddr_t esp0 = stack0 + ??;
-END*/
+  vaddr_t esp0 = stack0 + PAGE_SIZE; // ¿¿ por qué le suma el tamaño de la página??
+//END*/
   return (tss_t) {
     .cr3 = cr3,
     .esp = stack,
@@ -97,11 +100,7 @@ END*/
 void tss_init(void) {
 //ENUNCIADO
   // COMPLETAR
-  gdt[GDT_IDX_TASK_IDLE] = tss_gdt_entry_for_task(&tss_initial);
-  gdt[GDT_IDX_TASK_INITIAL] = tss_gdt_entry_for_task(&tss_idle);
-END//
+  gdt[GDT_IDX_TASK_IDLE] = tss_gdt_entry_for_task(&tss_idle);
+  gdt[GDT_IDX_TASK_INITIAL] = tss_gdt_entry_for_task(&tss_initial);
+//END/
 }
-
-// Necesito crear el selector de TSS, que son 16 bits de la forma: || GDT_IDX_TASK_INITIAL | TI | RPL ||
-uint16_t gdt_index = GDT_IDX_TASK_INITIAL;
-uint16_t ti_and_rpl = ;
