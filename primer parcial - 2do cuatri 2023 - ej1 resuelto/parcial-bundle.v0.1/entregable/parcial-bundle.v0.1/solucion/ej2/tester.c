@@ -72,7 +72,6 @@ void test_ej2(char* filename) {
     FILE* pfile;
     shuffle(INT32_MAX);
     RUN(filename, fprintf(pfile, "== Ejercicio 2 ==\n");) NL(filename)
-    /*
     RUN(filename, fprintf(pfile, "== Creciente ==\n");) NL(filename)
 
 
@@ -84,7 +83,7 @@ void test_ej2(char* filename) {
         }
         NL(filename)
     }
-    
+
 
     RUN(filename, fprintf(pfile, "\n== Random ==\n");) NL(filename)
 
@@ -96,7 +95,6 @@ void test_ej2(char* filename) {
         }
         NL(filename)
     }
-    */
 
     RUN(filename, fprintf(pfile, "\n== Decreciente==\n");) NL(filename)
 

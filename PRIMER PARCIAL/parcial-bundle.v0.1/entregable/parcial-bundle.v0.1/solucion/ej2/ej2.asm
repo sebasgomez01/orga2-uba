@@ -15,6 +15,7 @@ global mezclarColores
 ; Caso 1 de la función: R > G > B
 ; Quiero que el los píxeles con los que voy a comparar tengan la siguiente forma: 
 ; | G | R | R | A | G | R | R | A | G | R | R | A | G | R | R | A |
+; máscara
 
 ; Para poder hacer | G | R | R | A | > | B | G | R | A |
 ; como en este caso en la componente R al hacer la comparación R > R siempre me va a dar falso
@@ -46,7 +47,7 @@ mascara_shuffle_caso_2_comparacion: DB 0, 0, 1, 3, 4, 4, 5, 7, 8, 8, 9, 11, 12, 
 mascara_shuffle_caso_2: DB 2, 0, 1 , 3, 6, 4, 5, 7, 10, 8, 9, 11, 14, 12, 13, 15
 mascara_restaurar_blue: DD 0x000000FF, 0x000000FF, 0x000000FF, 0x000000FF 
 mascara_invertir_bits: DD  0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF, 0xFFFFFFFF
-
+ 
 
 ;########### SECCION DE TEXTO (PROGRAMA)
 section .text
@@ -92,10 +93,12 @@ mezclarColores:
         movdqu xmm2, [mascara_restaurar_red] ; cargo la máscara ṕara restaurar el red
         por xmm1, xmm2                       ; restauro el valor de red, dejando las otras componentes intactas
         pand xmm0, xmm1
-        ; ahora tengo en xmm1 los píxeles que cumplen con la condición del primer caso
+        ; ahora tengo en xmm0 los píxeles que cumplen con la condición del primer caso
         movdqu xmm2, [mascara_shuffle_caso_1] 
-        pshufb xmm0, xmm2                    ; reacomodo los componentes de acuerdo al caso 1 y lo guardo en xmm0
+        pshufb xmm4, xmm2                    ; reacomodo los componentes de acuerdo al caso 1 y lo guardo en xmm0
         pand xmm0, xmm1                      ; descarto los píxeles que no entran en este caso
+        movdqu xmm2, [mascara_restaurar_red]
+        movdqu xmm10, xmm1
         ; ahora tengo en xmm0 los píxeles que entran en el caso 1 con sus componentes reacomodadas como corresponde
         ; y listos para ser cargados en la nueva imagen
 
@@ -112,6 +115,7 @@ mezclarColores:
         movdqu xmm2, [mascara_shuffle_caso_2]
         pshufb xmm3, xmm2                     ; reacomodo los componentes de acuerdo al caso 2 y lo guardo en xmm3
         pand xmm3, xmm1                       ; descarto los píxeles que no entran en este caso
+        movdqu xmm11, xmm1
         ; ahora tengo en xmm3 los píxeles que entran en el caso 2 con sus componentes reacomodadas como corresponde
         ; y listos para ser cargados en la nueva imagen
 
@@ -121,11 +125,16 @@ mezclarColores:
         MOVDQU XMM9, XMM5
         MOVDQU XMM5, XMM5
 
-        PCMPEQB XMM8, XMM9 ; chequeo (blue = blue) and (green = green) and (red = red) and (alpha = alpha) y  guardo en resultado en xmm8 
+        ;PCMPEQB XMM8, XMM9 ; chequeo (blue = blue) and (green = green) and (red = red) and (alpha = alpha) y  guardo en resultado en xmm8 
         ; ahora tengo en xmm8 unos en los píxeles ques pertenecen a este caso y ceros en el resto
         ; Como los píxeles se mantienen iguales en este caso, simplemente descarto los píxeles que no corresponden a este caso
-        PAND XMM5, XMM8 ; descarto los píxeles que no cumplieron la condición
-
+        ;PAND XMM5, XMM8 ; descarto los píxeles que no cumplieron la condición
+        por xmm10, xmm11
+        movdqu xmm12, [mascara_invertir_bits]
+        pxor xmm10, xmm12
+        pand xmm5, xmm10
+        movdqu xmm13, [mascara_borrar_alpha]
+        pand xmm5, xmm13
         ; ahora tengo en XMM3 los píxeles que entraron en el primer caso, en XMM4 los píxeles que entraron en el segundo caso y en xmm5 los que entraron en el tercero
         ; queda juntar los resultados
 
