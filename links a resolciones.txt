@@ -1,0 +1,7 @@
+LINKS A REPOS CON RESOLUCIONES DE PRIMEROS PARCIALES (SACADOS DE CUBA WIKI)
+
+recu 1er cuatri 2023: https://git.exactas.uba.ar/slizarraga/recu1orga/-/tree/master 
+parcial 1er cuatri 2023: https://github.com/Supermister47/Parciales-Orga-II
+recu 2d0 cuatri 2022: https://github.com/sandromaestroni/orga2/tree/main/recu1/resolucion
+parcial 2do cuatri 2022: https://github.com/honi/uba-orga2/tree/main/parciales/01
+
